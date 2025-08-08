@@ -1,0 +1,30 @@
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from .forms import CryptoForm
+from .models import CryptoSelection
+from .modules.pair_price_check import get_crypto_price
+from decimal import Decimal
+
+def my_view(request):
+    if request.method == 'POST':
+        form = CryptoForm(request.POST)
+        if form.is_valid():
+            CryptoSelection.objects.create(
+                user=request.user,
+                alert_price = form.cleaned_data['alert_price'],
+                crypto = form.cleaned_data['crypto'],
+                now_price=Decimal(get_crypto_price(form.cleaned_data['crypto'])),
+            )
+
+            return redirect("home")
+    else:
+        form = CryptoForm()
+    user_alerts_db = CryptoSelection.objects.all()
+    return render(request, 'home.html', {'form': form, 'alerts': user_alerts_db})
+
+def delete_alert(request, alert_id):
+    if request.method == 'POST':
+        alert = CryptoSelection.objects.get(pk=alert_id)
+        alert.delete()
+    return redirect('home')
