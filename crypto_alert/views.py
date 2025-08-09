@@ -28,3 +28,6 @@ def delete_alert(request, alert_id):
         alert = CryptoSelection.objects.get(pk=alert_id)
         alert.delete()
     return redirect('home')
+
+
+
