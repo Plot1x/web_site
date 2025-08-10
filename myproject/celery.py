@@ -21,7 +21,7 @@ def debug_task(self):
 # Розклад для Celery Beat
 app.conf.beat_schedule = {
     'send-data-every-5-seconds': {
-        'task': 'myapp.tasks.send_data',
+        'task': 'crypto_alert.tasks.send_data',
         'schedule': timedelta(seconds=5),
     },
 }

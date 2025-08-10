@@ -21,6 +21,7 @@
     <a href="login">Go to Login</a>
     <a href="logout">Go to Logout</a>
     {% for item in alerts %}
+        <p>{{ item.user }}<p>
         <h2>{{ item.crypto }}</h2>
         <p>{{ item.alert_price }}</p>
         <p>{{ item.now_price }}</p>

@@ -9,19 +9,22 @@ from decimal import Decimal
 def my_view(request):
     if request.method == 'POST':
         form = CryptoForm(request.POST)
-        if form.is_valid():
-            CryptoSelection.objects.create(
-                user=request.user,
-                alert_price = form.cleaned_data['alert_price'],
-                crypto = form.cleaned_data['crypto'],
-                now_price=Decimal(get_crypto_price(form.cleaned_data['crypto'])),
-            )
+        if request.user.is_authenticated:
+            if form.is_valid():
+                CryptoSelection.objects.create(
+                    user=request.user,
+                    alert_price = form.cleaned_data['alert_price'],
+                    crypto = form.cleaned_data['crypto'],
+                    now_price=Decimal(get_crypto_price(form.cleaned_data['crypto'])),
+                )
 
-            return redirect("home")
+                return redirect("home")
+        else:
+            return redirect("login")
     else:
         form = CryptoForm()
-    user_alerts_db = CryptoSelection.objects.all()
-    return render(request, 'home.html', {'form': form, 'alerts': user_alerts_db})
+    alerts = CryptoSelection.objects.filter(user=request.user.id) 
+    return render(request, 'home.html', {'form': form, 'alerts': alerts})
 
 def delete_alert(request, alert_id):
     if request.method == 'POST':
