@@ -6,7 +6,7 @@ from .models import CryptoSelection
 from .modules.pair_price_check import get_crypto_price
 from decimal import Decimal
 
-def my_view(request):
+def post_alert(request):
     if request.method == 'POST':
         form = CryptoForm(request.POST)
         if request.user.is_authenticated:

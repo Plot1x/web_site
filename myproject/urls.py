@@ -22,7 +22,7 @@ from users import views as users
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', vi.my_view, name="home"),
+    path('', vi.post_alert, name="home"),
     path('registration/', users.registration, name="registration"),
     path('login/', users.login_view, name="login"),
     path('logout/', users.logout_view, name="logout"),
