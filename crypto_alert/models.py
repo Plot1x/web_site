@@ -6,3 +6,4 @@ class CryptoSelection(models.Model):
     crypto = models.CharField(max_length=50)
     alert_price = models.DecimalField(max_digits=10, decimal_places=2)
     now_price = models.DecimalField(max_digits=10, decimal_places=2)
+    last_checked_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
