@@ -15,7 +15,6 @@ def post_alert(request):
                     user=request.user,
                     alert_price = form.cleaned_data['alert_price'],
                     crypto = form.cleaned_data['crypto'],
-                    now_price=Decimal(get_crypto_price(form.cleaned_data['crypto'])),
                 )
 
                 return redirect("home")

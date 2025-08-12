@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .scroll-box {
+        width: 600px;
+        height: 400px;       
+        border: 1px solid #ccc;
+        padding: 12px;
+        overflow: auto;      
+        background: #fafafa;
+        }
+    </style>
 </head>
 <body>
     
@@ -20,16 +30,33 @@
     <a href="registration">Go to Registration</a>
     <a href="login">Go to Login</a>
     <a href="logout">Go to Logout</a>
-    {% for item in alerts %}
-        <p>{{ item.user }}<p>
-        <h2>{{ item.crypto }}</h2>
-        <p>{{ item.alert_price }}</p>
-        <p>{{ item.now_price }}</p>
+    <p>Active alerts</p>
+    <div class="scroll-box">
+        {% for item in alerts %}
+            {%if item.is_expired == False%}
+                <h2>{{ item.crypto }}</h2>
+                <p>{{ item.alert_price }}</p>
 
-        <form action="{% url 'delete-alert' item.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit">Видалити</button>
-        </form>
-    {% endfor %}
+                <form action="{% url 'delete-alert' item.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Видалити</button>
+                </form>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <p>Expired alerts</p>
+    <div class="scroll-box">
+        {% for item in alerts %}
+            {%if item.is_expired == True%}
+                <h2>{{ item.crypto }}</h2>
+                <p>{{ item.alert_price }}</p>
+
+                <form action="{% url 'delete-alert' item.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Видалити</button>
+                </form>
+            {% endif %}
+        {% endfor %}
+    </div>
 </body>
 </html>
