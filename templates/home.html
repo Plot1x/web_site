@@ -4,59 +4,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Crypto Alerts</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
         .scroll-box {
-        width: 600px;
-        height: 400px;       
-        border: 1px solid #ccc;
-        padding: 12px;
-        overflow: auto;      
-        background: #fafafa;
+            width: 600px;
+            height: 200px;
+            border: 1px solid #ccc;
+            padding: 12px;
+            overflow: auto;
+            background: #fafafa;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 6px;
+            margin: 4px 0;
+        }
+        button {
+            cursor: pointer;
+        }
+        h2 {
+            margin: 0;
+        }
+        .alert-item {
+            border-bottom: 1px solid #ddd;
+            padding: 6px 0;
         }
     </style>
 </head>
 <body>
-    
+
     {% if user.is_authenticated %}
         <p>You are logged in as <strong>{{ user.username }}</strong></p>
+        <a href="{% url 'logout' %}">Logout</a> |
+    {% else %}
+        <p>You are not logged in.</p>
+        <a href="{% url 'login' %}">Login</a> |
+        <a href="{% url 'registration' %}">Register</a>
     {% endif %}
+
+    <h1>Add New Crypto Alert</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form }}
-        <button class="favorite styled" type="submit">Add to favorites</button>
+        {{ form.alert_price.label_tag }}<br>
+        {{ form.alert_price }}<br><br>
+
+        {{ form.crypto.label_tag }}<br>
+        {{ form.crypto }}<br><br>
+
+        <datalist id="crypto_symbols">
+            {% for crypto in symbols %}
+                <option value="{{ crypto.symbol }}">{{ crypto.name }}</option>
+            {% endfor %}
+        </datalist>
+
+        <button type="submit">Add Alert</button>
     </form>
-    <a href="registration">Go to Registration</a>
-    <a href="login">Go to Login</a>
-    <a href="logout">Go to Logout</a>
-    <p>Active alerts</p>
+
+    <h2>Active Alerts</h2>
     <div class="scroll-box">
         {% for item in alerts %}
-            {%if item.is_expired == False%}
-                <h2>{{ item.crypto }}</h2>
-                <p>{{ item.alert_price }}</p>
-
-                <form action="{% url 'delete-alert' item.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Видалити</button>
-                </form>
+            {% if not item.is_expired %}
+                <div class="alert-item">
+                    <h3>{{ item.crypto }}</h3>
+                    <p>Target price: {{ item.alert_price }}</p>
+                    <form action="{% url 'delete-alert' item.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
             {% endif %}
         {% endfor %}
     </div>
-    <p>Expired alerts</p>
+
+    <h2>Expired Alerts</h2>
     <div class="scroll-box">
         {% for item in alerts %}
-            {%if item.is_expired == True%}
-                <h2>{{ item.crypto }}</h2>
-                <p>{{ item.alert_price }}</p>
-
-                <form action="{% url 'delete-alert' item.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Видалити</button>
-                </form>
+            {% if item.is_expired %}
+                <div class="alert-item">
+                    <h3>{{ item.crypto }}</h3>
+                    <p>Target price: {{ item.alert_price }}</p>
+                    <form action="{% url 'delete-alert' item.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
             {% endif %}
         {% endfor %}
     </div>
+
 </body>
 </html>

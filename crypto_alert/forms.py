@@ -1,11 +1,12 @@
 from django import forms
+from .models import CryptoSelection
 
-CRYPTO_CHOICES = [
-        ('BTCUSDT', 'Bitcoin (BTC)'),
-        ('ETHUSDT', 'Ethereum (ETH)'),
-        ('SOLUSDT', 'Solana (SOL)'),
-    ]
+class CryptoSelectionForm(forms.ModelForm):
+    crypto = forms.CharField(
+        label="Crypto Symbol",
+        widget=forms.TextInput(attrs={"list": "crypto_symbols", "placeholder": "Enter symbol"})
+    )
 
-class CryptoForm(forms.Form):
-    alert_price = forms.CharField(label="Ціна", max_length=10000000)
-    crypto = forms.ChoiceField(choices=CRYPTO_CHOICES, label="Виберіть криптовалюту")
+    class Meta:
+        model = CryptoSelection
+        fields = ['crypto', 'alert_price']
