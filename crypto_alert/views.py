@@ -3,8 +3,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .forms import CryptoSelectionForm
 from .models import CryptoSelection, CryptoSymbol
-from .modules.pair_price_check import get_crypto_price
-from decimal import Decimal
 
 def post_alert(request):
     if request.method == 'POST':
