@@ -6,6 +6,10 @@ from decimal import Decimal
 
 @shared_task
 def send_data():
+    """
+        Функція перевіряє чи ціна дійшла до визначеної відмітки.
+    """
+
     selections = CryptoSelection.objects.all()
     print(f"--- {datetime.now()} ---")
 
@@ -16,13 +20,13 @@ def send_data():
         get_all_tickers = next((item["price"] for item in get_all_crypto if item["symbol"] == sel.crypto), None)
 
         if sel.last_checked_price is not None:
-            if sel.last_checked_price < sel.alert_price <= Decimal(get_all_tickers):
+            if sel.last_checked_price < sel.alert_price <= Decimal(get_all_tickers): # Якщо ціна пересікає знизу вверх 
                 print(f"User: {sel.user.username}, Crypto: {sel.crypto}, "
                     f"Alert Price: {sel.alert_price}, Now Price: {sel.last_checked_price}",
                     "Ціна пересікла знизу вгору")
                 sel.is_expired = True
                 
-            elif sel.last_checked_price > sel.alert_price >= Decimal(get_all_tickers):
+            elif sel.last_checked_price > sel.alert_price >= Decimal(get_all_tickers): # Якщо ціна пересікає зверху вниз
                 print(f"User: {sel.user.username}, Crypto: {sel.crypto}, "
                     f"Alert Price: {sel.alert_price}, Now Price: {sel.last_checked_price}",
                     "Ціна пересікла зверху в низ")

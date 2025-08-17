@@ -8,6 +8,9 @@ from django.contrib.auth import login, logout
 users = User.objects.all()
 
 def registration(request):
+    """
+        Функція для реєстрації новго користувача. 
+    """
     if request.method == 'POST':
         form = RegisterForm(request, data=request.POST)
         if form.is_valid():
@@ -18,6 +21,9 @@ def registration(request):
     return render(request, 'registration.html', {'form': form})
 
 def login_view(request):
+    """
+        Функція для аунтифікації користувача.
+    """
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -28,5 +34,8 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 def logout_view(request):
+    """
+        Функція для виходу з акаунту.
+    """
     logout(request)
     return redirect('home')
